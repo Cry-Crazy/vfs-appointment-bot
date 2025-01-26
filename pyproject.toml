@@ -21,15 +21,16 @@ build-backend = "poetry.core.masonry.api"
 # Dependencies
 [tool.poetry.dependencies]
 python = "^3.9"
-playwright = "^1.43.0"
 playwright-stealth = "^1.0.6"
 twilio = "^9.0.4"
 tqdm = "^4.66.2"
+patchright = "^1.49.1"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
 black = "^24.4.2"
 
 #Entry points
+pylint = "^3.3.3"
 [tool.poetry.scripts]
 vfs-appointment-bot = "vfs_appointment_bot.main:main"

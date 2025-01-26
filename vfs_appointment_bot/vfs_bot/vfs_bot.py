@@ -3,8 +3,8 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Dict, List
 
-import playwright
-from playwright.sync_api import sync_playwright
+import patchright
+from patchright.sync_api import sync_playwright
 from playwright_stealth import stealth_sync
 
 from vfs_appointment_bot.utils.config_reader import get_config_value
@@ -69,11 +69,45 @@ class VfsBot(ABC):
 
         appointment_params = self.get_appointment_params(args)
 
+        cookies = [
+            {"name": key, "value": value, "domain": ".visa.vfsglobal.com", "path": "/"}
+            for key, value in {
+                "dtCookie": "-14$RUGP8M9NP475U718E5U8292886R09BQ9",
+                "rxVisitor": "1736456320917E62D6AKP2MMTR1MCTBA27G8A1OU71Q6G",
+                "rxvt": "1737141112873|1737139312873",
+                "dtPC": "-14$139312869_399h1vHSHHWARBFMEPSDKRJUCWTIVRFAPOPCKB-0",
+                "OptanonAlertBoxClosed": "2025-01-17T18:42:00.446Z",
+                "OptanonConsent": "isGpcEnabled=0&datestamp=Fri+Jan+17+2025+21%3A42%3A00...",
+                "__cf_bm": "pzYGIf9LbEO_FYNKZ5x3NTXyxILU1_pWZYUNOY4iv7Q...",
+                "_cfuvid": "m9ZaOMC.THjGAQr0InPNK1hm8gYxTMlWx_WZ3gn7d4Y...",
+                "cf_clearance": "TtPWu0ZquPB.iVOoRLws2wa3jEyI.xDF6bAzJgRRbKM...",
+            }.items()
+        ]
+
+        headers = {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.6,en;q=0.5",
+            "cache-control": "max-age=0",
+            "dnt": "1",
+            "priority": "u=0, i",
+            "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0",
+        }
+
         # Launch browser and perform actions
         with sync_playwright() as p:
             browser = getattr(p, browser_type).launch(
                 headless=headless_mode in ("True", "true")
             )
+            context = browser.new_context(extra_http_headers=headers)
+
             page = browser.new_page()
             stealth_sync(page)
 
@@ -164,7 +198,7 @@ class VfsBot(ABC):
 
     @abstractmethod
     def login(
-        self, page: playwright.sync_api.Page, email_id: str, password: str
+        self, page: patchright.sync_api.Page, email_id: str, password: str
     ) -> None:
         """
         Performs login steps specific to the VFS website for the bot's country.
@@ -185,7 +219,7 @@ class VfsBot(ABC):
         raise NotImplementedError("Subclasses must implement login logic")
 
     @abstractmethod
-    def pre_login_steps(self, page: playwright.sync_api.Page) -> None:
+    def pre_login_steps(self, page: patchright.sync_api.Page) -> None:
         """
         Performs any pre-login steps required by the VFS website for the bot's country.
 
@@ -199,7 +233,7 @@ class VfsBot(ABC):
 
     @abstractmethod
     def check_for_appontment(
-        self, page: playwright.sync_api.Page, appointment_params: Dict[str, str]
+        self, page: patchright.sync_api.Page, appointment_params: Dict[str, str]
     ) -> List[str]:
         """
         Checks for appointments based on provided parameters on the VFS website.

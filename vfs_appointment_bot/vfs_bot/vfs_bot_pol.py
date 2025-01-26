@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Optional
 
-from patchright.sync_api import Page
+from playwright.sync_api import Page
 
 from vfs_appointment_bot.utils.date_utils import extract_date_from_string
 from vfs_appointment_bot.vfs_bot.vfs_bot import VfsBot
@@ -49,7 +49,7 @@ class VfsBotDe(VfsBot):
         (e.g., if the "Start New Booking" button is not found after login).
 
         Args:
-            page (patchright.sync_api.Page): The patchright page object used for browser interaction.
+            page (playwright.sync_api.Page): The Playwright page object used for browser interaction.
             email_id (str): The user's email address for VFS login.
             password (str): The user's password for VFS login.
 
@@ -73,7 +73,7 @@ class VfsBotDe(VfsBot):
         clicks it if found.
 
         Args:
-            page (patchright.sync_api.Page): The patchright page object used for browser interaction.
+            page (playwright.sync_api.Page): The Playwright page object used for browser interaction.
         """
         policies_reject_button = page.get_by_role("button", name="Reject All")
         if policies_reject_button is not None:
@@ -93,7 +93,7 @@ class VfsBotDe(VfsBot):
         returns None.
 
         Args:
-            page (patchright.sync_api.Page): The patchright page object used for browser interaction.
+            page (playwright.sync_api.Page): The Playwright page object used for browser interaction.
             appointment_params (Dict[str, str]): A dictionary containing appointment search criteria.
 
         Returns:

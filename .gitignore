@@ -30,5 +30,7 @@ venv
 app.log
 
 # Local Config
+.config/config.ini
 config.ini
 *.ini
+*.pyc
